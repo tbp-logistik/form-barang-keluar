@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="icon" href="./favicon.ico" type="image/x-icon">
-<link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
 <title>Form Barang Keluar - PT. Trimegah Bangun Persada</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a1a; min-height: 100vh; padding: 1rem; }
 
   .header { background: #1e3a5f; color: white; padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1rem; display: flex; align-items: center; gap: 12px; }
-  .header-logo { width: 52px; height: 52px; border-radius: 8px; background: white; padding: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; }
+  .header-logo { width: 52px; height: 52px; border-radius: 8px; background: white; padding: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
   .header-logo img { width: 100%; height: 100%; object-fit: contain; }
   .header-text h1 { font-size: 15px; font-weight: 700; line-height: 1.3; }
   .header-text h2 { font-size: 13px; font-weight: 400; opacity: 0.75; margin-top: 2px; }
@@ -31,50 +29,33 @@
   .field { margin-bottom: 14px; }
   .field:last-child { margin-bottom: 0; }
 
-  /* No Transaksi badge */
-  .no-trx-badge {
-    display: inline-block; background: #e8f0fe; color: #1e3a5f;
-    font-size: 12px; font-weight: 600; padding: 4px 10px;
-    border-radius: 20px; margin-bottom: 12px; letter-spacing: 0.03em;
-  }
+  .no-trx-badge { display: inline-block; background: #e8f0fe; color: #1e3a5f; font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 20px; margin-bottom: 12px; }
 
-  /* Radio Button Unit Prefix */
-  .prefix-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px;
-  }
+  /* Prefix Radio Grid */
+  .prefix-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
   .prefix-opt { position: relative; }
   .prefix-opt input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
-  .prefix-opt label {
-    display: flex; align-items: center; justify-content: center;
-    padding: 8px 4px; border: 1.5px solid #d1d5db; border-radius: 8px;
-    font-size: 13px; font-weight: 600; color: #4b5563;
-    cursor: pointer; text-align: center; transition: all 0.15s;
-    margin: 0;
-  }
-  .prefix-opt input[type="radio"]:checked + label {
-    border-color: #1e3a5f; background: #e8f0fe; color: #1e3a5f;
-  }
-  .unit-row { display: flex; gap: 8px; align-items: center; }
-  .unit-prefix-display {
-    background: #1e3a5f; color: white; padding: 10px 12px;
-    border-radius: 8px; font-size: 15px; font-weight: 600;
-    white-space: nowrap; flex-shrink: 0; min-width: 52px; text-align: center;
-  }
-  .unit-row input { flex: 1; }
+  .prefix-opt label { display: flex; align-items: center; justify-content: center; padding: 8px 4px; border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 13px; font-weight: 600; color: #4b5563; cursor: pointer; transition: all 0.15s; margin: 0; }
+  .prefix-opt input[type="radio"]:checked + label { border-color: #1e3a5f; background: #e8f0fe; color: #1e3a5f; }
 
-  /* Radio Warehouse */
+  /* Unit area */
+  .unit-input-area { display: none; margin-top: 6px; }
+  .unit-loading { font-size: 12px; color: #6b7280; padding: 6px 0; display: none; }
+  .unit-manual-toggle { font-size: 12px; color: #1e3a5f; cursor: pointer; text-decoration: underline; margin-top: 8px; display: inline-block; }
+  .unit-manual-wrap { display: none; margin-top: 8px; }
+  .unit-manual-wrap.show { display: block; }
+  .unit-prefix-badge { display: inline-block; background: #1e3a5f; color: white; padding: 4px 10px; border-radius: 6px; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+
+  /* Manufacture badge */
+  .manufacture-badge { display: none; margin-top: 8px; padding: 8px 12px; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; font-size: 13px; color: #15803d; font-weight: 500; }
+  .manufacture-badge.show { display: block; }
+
+  /* Warehouse Radio */
   .wh-options { display: flex; gap: 10px; margin-bottom: 12px; }
   .wh-opt { position: relative; flex: 1; }
   .wh-opt input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
-  .wh-opt label {
-    display: flex; align-items: center; justify-content: center;
-    padding: 10px 8px; border: 1.5px solid #d1d5db; border-radius: 10px;
-    font-size: 13px; font-weight: 600; color: #4b5563;
-    cursor: pointer; text-align: center; transition: all 0.15s; margin: 0;
-  }
-  .wh-opt input[type="radio"]:checked + label {
-    border-color: #1e3a5f; background: #e8f0fe; color: #1e3a5f;
-  }
+  .wh-opt label { display: flex; align-items: center; justify-content: center; padding: 10px 8px; border: 1.5px solid #d1d5db; border-radius: 10px; font-size: 13px; font-weight: 600; color: #4b5563; cursor: pointer; transition: all 0.15s; margin: 0; }
+  .wh-opt input[type="radio"]:checked + label { border-color: #1e3a5f; background: #e8f0fe; color: #1e3a5f; }
   .wh-sub { display: none; }
   .wh-sub.show { display: block; }
 
@@ -120,7 +101,7 @@
 
 <div class="header">
   <div class="header-logo">
-    <img src="Logo.png" alt="Logo PT. Trimegah Bangun Persada" />
+    <img src="Logo-NCKL%2020(small).png" alt="Logo PT. Trimegah Bangun Persada" />
   </div>
   <div class="header-text">
     <h1>PT. TRIMEGAH BANGUN PERSADA</h1>
@@ -133,7 +114,7 @@
   <div class="card-title">Informasi Transaksi</div>
 
   <div id="no-trx-wrap" style="display:none;">
-    <span class="no-trx-badge" id="no-trx-display">Memuat No. Transaksi...</span>
+    <span class="no-trx-badge" id="no-trx-display"></span>
   </div>
 
   <div class="field">
@@ -169,32 +150,56 @@
   <div class="field">
     <label>No Unit</label>
     <div class="prefix-grid">
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-DT" value="DT"><label for="p-DT">DT</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-LV" value="LV"><label for="p-LV">LV</label></div>
       <div class="prefix-opt"><input type="radio" name="prefix" id="p-BD" value="BD"><label for="p-BD">BD</label></div>
       <div class="prefix-opt"><input type="radio" name="prefix" id="p-EX" value="EX"><label for="p-EX">EX</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-CP" value="CP"><label for="p-CP">CP</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-MG" value="MG"><label for="p-MG">MG</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-LT" value="LT"><label for="p-LT">LT</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-CT" value="CT"><label for="p-CT">CT</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-FT" value="FT"><label for="p-FT">FT</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-MH" value="MH"><label for="p-MH">MH</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-WT" value="WT"><label for="p-WT">WT</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-GD" value="GD"><label for="p-GD">GD</label></div>
       <div class="prefix-opt"><input type="radio" name="prefix" id="p-WL" value="WL"><label for="p-WL">WL</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-FL" value="FL"><label for="p-FL">FL</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-LVB" value="LVB"><label for="p-LVB">LVB</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-ST" value="ST"><label for="p-ST">ST</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-TS" value="TS"><label for="p-TS">TS</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-BL" value="BL"><label for="p-BL">BL</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-CP" value="CP"><label for="p-CP">CP</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-ADT" value="ADT"><label for="p-ADT">ADT</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-DT" value="DT"><label for="p-DT">DT</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-MC" value="MC"><label for="p-MC">MC</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-LT" value="LT"><label for="p-LT">LT</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-FT" value="FT"><label for="p-FT">FT</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-LV" value="LV"><label for="p-LV">LV</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-LVBOX" value="LVBOX"><label for="p-LVBOX">LVBOX</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-AMB" value="AMBULANCE"><label for="p-AMB">AMB</label></div>
       <div class="prefix-opt"><input type="radio" name="prefix" id="p-MB" value="MB"><label for="p-MB">MB</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-MH" value="MH"><label for="p-MH">MH</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-ST" value="ST"><label for="p-ST">ST</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-WT" value="WT"><label for="p-WT">WT</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-TS" value="TS"><label for="p-TS">TS</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-LTTYRE" value="LTTYRE"><label for="p-LTTYRE">LTTYRE</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-PK" value="PK"><label for="p-PK">PK</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-TH" value="TH"><label for="p-TH">TH</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-FL" value="FL"><label for="p-FL">FL</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-LB" value="LB"><label for="p-LB">LB</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-PM" value="PM"><label for="p-PM">PM</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-BC" value="BC"><label for="p-BC">BC</label></div>
       <div class="prefix-opt"><input type="radio" name="prefix" id="p-WS" value="WS"><label for="p-WS">WS</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-HS" value="HS"><label for="p-HS">HS</label></div>
-      <div class="prefix-opt"><input type="radio" name="prefix" id="p-DEPT" value="DEPT"><label for="p-DEPT">DEPT</label></div>
+      <div class="prefix-opt"><input type="radio" name="prefix" id="p-ML" value="ML"><label for="p-ML">ML</label></div>
+      <div class="prefix-opt" style="grid-column: span 4;"><input type="radio" name="prefix" id="p-DEPT" value="DEPT. OTHERS"><label for="p-DEPT" style="font-size:12px;">Departement Others</label></div>
     </div>
-    <div class="unit-row" id="unit-input-wrap" style="display:none;">
-      <div class="unit-prefix-display" id="unit-prefix-display">--</div>
-      <input type="text" id="no-unit-num" placeholder="Nomor unit..." inputmode="numeric" />
+
+    <div class="unit-input-area" id="unit-input-area">
+      <p class="unit-loading" id="unit-loading">⏳ Memuat daftar unit...</p>
+
+      <div id="unit-dropdown-wrap" style="display:none;">
+        <select id="unit-select" onchange="onUnitSelect()">
+          <option value="">— Pilih No Unit —</option>
+        </select>
+        <div class="manufacture-badge" id="manufacture-badge"></div>
+        <span class="unit-manual-toggle" onclick="toggleManualUnit()">+ Ketik manual (tidak ada di list)</span>
+      </div>
+
+      <div class="unit-manual-wrap" id="unit-manual-wrap">
+        <span class="unit-prefix-badge" id="unit-prefix-badge">--</span>
+        <input type="text" id="no-unit-manual" placeholder="Ketik nomor unit..." />
+      </div>
     </div>
+
     <input type="hidden" id="no-unit" />
+    <input type="hidden" id="manufacture" />
   </div>
 
   <div class="field">
@@ -255,11 +260,13 @@
 <script>
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyVhyo9FErPXyEgiBtiRQwv_oZsi90dDyvFrJcgn9jx1g0gJ1UspcBJonY897qtAzhO/exec';
 
-let itemCount = 0;
-let activeScanner = null;
+let itemCount         = 0;
+let activeScanner     = null;
 let activeScannerItemId = null;
-let isSubmitting = false;
-let masterDB = {}; // cache PN → Description
+let isSubmitting      = false;
+let masterDB          = {};
+let unitsCache        = {};
+let manualUnitMode    = false;
 
 // ── Clock ──
 function updateClock() {
@@ -271,32 +278,121 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-// ── No Unit Prefix ──
+// ── Prefix Radio ──
 document.querySelectorAll('input[name="prefix"]').forEach(radio => {
-  radio.addEventListener('change', () => {
-    const val = radio.value;
-    document.getElementById('unit-prefix-display').textContent = val;
-    document.getElementById('unit-input-wrap').style.display = 'flex';
-    const numInput = document.getElementById('no-unit-num');
-    if (val === 'DEPT') {
-      numInput.inputMode = 'text';
-      numInput.placeholder = 'Nama departemen...';
-    } else {
-      numInput.inputMode = 'numeric';
-      numInput.placeholder = 'Nomor unit...';
-    }
-    updateNoUnit();
-  });
+  radio.addEventListener('change', () => onPrefixChange(radio.value, radio.id.replace('p-','')));
 });
-document.getElementById('no-unit-num').addEventListener('input', updateNoUnit);
-function updateNoUnit() {
-  const prefix = document.querySelector('input[name="prefix"]:checked');
-  const num = document.getElementById('no-unit-num').value.trim();
-  if (prefix && num) {
-    document.getElementById('no-unit').value = prefix.value + '-' + num;
-  } else {
-    document.getElementById('no-unit').value = '';
+
+async function onPrefixChange(classValue, displayLabel) {
+  manualUnitMode = false;
+  document.getElementById('unit-input-area').style.display = 'block';
+  document.getElementById('unit-loading').style.display = 'block';
+  document.getElementById('unit-dropdown-wrap').style.display = 'none';
+  document.getElementById('unit-manual-wrap').classList.remove('show');
+  document.getElementById('unit-prefix-badge').textContent = displayLabel;
+  document.getElementById('no-unit-manual').value = '';
+  document.getElementById('no-unit').value = '';
+  document.getElementById('manufacture').value = '';
+  document.getElementById('manufacture-badge').classList.remove('show');
+
+  if (classValue === 'DEPT. OTHERS') {
+    document.getElementById('unit-loading').style.display = 'none';
+    document.getElementById('unit-manual-wrap').classList.add('show');
+    document.getElementById('no-unit-manual').placeholder = 'Nama departemen...';
+    document.getElementById('no-unit-manual').oninput = () => {
+      const v = document.getElementById('no-unit-manual').value.trim();
+      document.getElementById('no-unit').value = v ? 'DEPT-' + v : '';
+    };
+    return;
   }
+
+  if (unitsCache[classValue]) {
+    renderUnitDropdown(classValue, displayLabel, unitsCache[classValue]);
+    return;
+  }
+
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getUnits&prefix=${encodeURIComponent(classValue)}`);
+    const json = await res.json();
+    unitsCache[classValue] = json.units || [];
+    renderUnitDropdown(classValue, displayLabel, unitsCache[classValue]);
+  } catch(e) {
+    document.getElementById('unit-loading').style.display = 'none';
+    document.getElementById('unit-manual-wrap').classList.add('show');
+    document.getElementById('no-unit-manual').placeholder = 'Nomor unit...';
+    document.getElementById('no-unit-manual').oninput = updateNoUnitManual;
+  }
+}
+
+function renderUnitDropdown(classValue, displayLabel, units) {
+  document.getElementById('unit-loading').style.display = 'none';
+  const sel = document.getElementById('unit-select');
+  sel.innerHTML = '<option value="">— Pilih No Unit —</option>';
+
+  if (units.length === 0) {
+    document.getElementById('unit-manual-wrap').classList.add('show');
+    document.getElementById('no-unit-manual').placeholder = 'Nomor unit...';
+    document.getElementById('no-unit-manual').oninput = updateNoUnitManual;
+    document.querySelector('.unit-manual-toggle').style.display = 'none';
+  } else {
+    units.forEach(u => {
+      const opt = document.createElement('option');
+      opt.value = JSON.stringify({ code: u.code, manufacture: u.manufacture });
+      opt.textContent = u.code;
+      sel.appendChild(opt);
+    });
+    document.getElementById('unit-dropdown-wrap').style.display = 'block';
+    document.querySelector('.unit-manual-toggle').style.display = 'inline-block';
+  }
+}
+
+function onUnitSelect() {
+  const raw = document.getElementById('unit-select').value;
+  const badge = document.getElementById('manufacture-badge');
+  if (!raw) {
+    document.getElementById('no-unit').value = '';
+    document.getElementById('manufacture').value = '';
+    badge.classList.remove('show');
+    return;
+  }
+  const data = JSON.parse(raw);
+  document.getElementById('no-unit').value = data.code;
+  document.getElementById('manufacture').value = data.manufacture;
+  if (data.manufacture) {
+    badge.textContent = '🏭 ' + data.manufacture;
+    badge.classList.add('show');
+  } else {
+    badge.classList.remove('show');
+  }
+}
+
+function toggleManualUnit() {
+  manualUnitMode = !manualUnitMode;
+  const wrap   = document.getElementById('unit-manual-wrap');
+  const toggle = document.querySelector('.unit-manual-toggle');
+  const badge  = document.getElementById('manufacture-badge');
+  if (manualUnitMode) {
+    wrap.classList.add('show');
+    document.getElementById('no-unit-manual').placeholder = 'Nomor unit...';
+    document.getElementById('no-unit-manual').oninput = updateNoUnitManual;
+    toggle.textContent = '← Pilih dari list';
+    document.getElementById('unit-select').value = '';
+    document.getElementById('no-unit').value = '';
+    document.getElementById('manufacture').value = '';
+    badge.classList.remove('show');
+  } else {
+    wrap.classList.remove('show');
+    toggle.textContent = '+ Ketik manual (tidak ada di list)';
+    document.getElementById('no-unit-manual').value = '';
+    onUnitSelect();
+  }
+}
+
+function updateNoUnitManual() {
+  const prefix = document.querySelector('input[name="prefix"]:checked');
+  const label  = prefix ? prefix.id.replace('p-','') : '';
+  const val    = document.getElementById('no-unit-manual').value.trim();
+  document.getElementById('no-unit').value = (label && val) ? label + '-' + val : '';
 }
 
 // ── Warehouse ──
@@ -320,29 +416,23 @@ function getWarehouse() {
   return '';
 }
 
-// ── Master DB (fetch dari Apps Script) ──
+// ── Master DB ──
 async function fetchMasterDB() {
   try {
-    const res = await fetch(APPS_SCRIPT_URL + '?action=getMaster');
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getMaster`);
     const json = await res.json();
-    if (json.data) {
-      json.data.forEach(row => {
-        if (row.pn) masterDB[row.pn.trim().toUpperCase()] = row.desc || '';
-      });
-    }
-  } catch(e) { console.warn('Master DB tidak bisa diload:', e); }
+    if (json.data) json.data.forEach(r => { if (r.pn) masterDB[r.pn.trim().toUpperCase()] = r.desc || ''; });
+  } catch(e) { console.warn('Master DB gagal:', e); }
 }
 fetchMasterDB();
 
-function lookupDescription(pn) {
-  return masterDB[pn.trim().toUpperCase()] || '';
-}
+function lookupDescription(pn) { return masterDB[pn.trim().toUpperCase()] || ''; }
 
-// ── Duplicate PN Check ──
+// ── Duplicate PN ──
 function checkDuplicatePN(currentId) {
   const currentPN = document.getElementById(`pn-${currentId}`).value.trim().toUpperCase();
   if (!currentPN) return false;
-  let duplicate = false;
+  let dup = false;
   document.querySelectorAll('[id^="pn-"]').forEach(el => {
     const id = el.id.split('-')[1];
     if (id == currentId) return;
@@ -350,16 +440,16 @@ function checkDuplicatePN(currentId) {
       showToast(`PN ${currentPN} sudah ada pada Part #${id}`, 'danger');
       document.getElementById(`pn-${currentId}`).value = '';
       document.getElementById(`desc-${currentId}`).value = '';
-      duplicate = true;
+      dup = true;
     }
   });
-  return duplicate;
+  return dup;
 }
 
 // ── Add Item ──
 function tambahItem() {
   itemCount++;
-  const id = itemCount;
+  const id  = itemCount;
   const div = document.createElement('div');
   div.className = 'part-card';
   div.id = 'item-' + id;
@@ -375,8 +465,7 @@ function tambahItem() {
       <label>Part Number</label>
       <div class="scan-row">
         <input type="text" id="pn-${id}" placeholder="Scan atau ketik manual"
-          onblur="onPNBlur(${id})"
-          onkeydown="if(event.key==='Enter'){onPNBlur(${id})}" />
+          onblur="onPNBlur(${id})" onkeydown="if(event.key==='Enter'){onPNBlur(${id})}" />
         <button class="btn-scan" id="btn-scan-${id}" onclick="toggleScanner(${id})" aria-label="Scan barcode">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9V5a2 2 0 012-2h4"/><path d="M15 3h4a2 2 0 012 2v4"/><path d="M21 15v4a2 2 0 01-2 2h-4"/><path d="M9 21H5a2 2 0 01-2-2v-4"/><line x1="7" y1="8" x2="7" y2="16"/><line x1="10" y1="8" x2="10" y2="16"/><line x1="13" y1="8" x2="13" y2="16"/><line x1="16" y1="8" x2="16" y2="16"/></svg>
         </button>
@@ -412,10 +501,7 @@ function tambahItem() {
 function onPNBlur(id) {
   if (checkDuplicatePN(id)) return;
   const pn = document.getElementById(`pn-${id}`).value.trim();
-  if (pn) {
-    const desc = lookupDescription(pn);
-    document.getElementById(`desc-${id}`).value = desc || '(Tidak ditemukan di master)';
-  }
+  if (pn) document.getElementById(`desc-${id}`).value = lookupDescription(pn) || '(Tidak ditemukan di master)';
 }
 
 function hapusItem(id) {
@@ -432,9 +518,9 @@ function toggleScanner(id) {
 }
 
 function startScanner(id) {
-  const wrap = document.getElementById('scanner-wrap-' + id);
-  const video = document.getElementById('video-' + id);
-  const btn = document.getElementById('btn-scan-' + id);
+  const wrap   = document.getElementById('scanner-wrap-' + id);
+  const video  = document.getElementById('video-' + id);
+  const btn    = document.getElementById('btn-scan-' + id);
   const status = document.getElementById('scan-status-' + id);
   wrap.style.display = 'block';
   btn.classList.add('active');
@@ -452,10 +538,8 @@ function startScanner(id) {
       status.textContent = '✓ Berhasil: ' + pn;
       status.style.color = '#16a34a';
       stopScanner();
-      // cek duplikat & lookup desc
       if (!checkDuplicatePN(id)) {
-        const desc = lookupDescription(pn);
-        document.getElementById(`desc-${id}`).value = desc || '(Tidak ditemukan di master)';
+        document.getElementById(`desc-${id}`).value = lookupDescription(pn) || '(Tidak ditemukan di master)';
       }
       document.getElementById('qty-' + id).focus();
     }
@@ -470,20 +554,13 @@ function startScanner(id) {
 }
 
 function stopScanner() {
-  if (activeScanner) {
-    try { activeScanner.reset(); } catch(e) {}
-    activeScanner = null;
-  }
+  if (activeScanner) { try { activeScanner.reset(); } catch(e) {} activeScanner = null; }
   if (activeScannerItemId !== null) {
     const wrap = document.getElementById('scanner-wrap-' + activeScannerItemId);
-    const btn = document.getElementById('btn-scan-' + activeScannerItemId);
-    // Matikan track kamera
+    const btn  = document.getElementById('btn-scan-' + activeScannerItemId);
     if (wrap) {
       const video = wrap.querySelector('video');
-      if (video && video.srcObject) {
-        video.srcObject.getTracks().forEach(track => track.stop());
-        video.srcObject = null;
-      }
+      if (video && video.srcObject) { video.srcObject.getTracks().forEach(t => t.stop()); video.srcObject = null; }
       wrap.style.display = 'none';
     }
     if (btn) btn.classList.remove('active');
@@ -495,36 +572,31 @@ function stopScanner() {
 async function submitForm() {
   if (isSubmitting) return;
 
-  const tgl = document.getElementById('tgl-jam').value;
-  const nama = document.getElementById('nama').value;
-  const noUnit = document.getElementById('no-unit').value.trim();
+  const tgl          = document.getElementById('tgl-jam').value;
+  const nama         = document.getElementById('nama').value;
+  const noUnit       = document.getElementById('no-unit').value.trim();
+  const manufacture  = document.getElementById('manufacture').value.trim();
   const namaPenerima = document.getElementById('nama-penerima').value.trim();
-  const warehouse = getWarehouse();
+  const warehouse    = getWarehouse();
 
-  if (!nama) { showToast('Pilih nama PIC terlebih dahulu.', 'danger'); return; }
-  if (!noUnit) { showToast('Pilih prefix dan isi No Unit terlebih dahulu.', 'danger'); return; }
+  if (!nama)         { showToast('Pilih nama PIC terlebih dahulu.', 'danger'); return; }
+  if (!noUnit)       { showToast('Pilih prefix dan isi No Unit terlebih dahulu.', 'danger'); return; }
   if (!namaPenerima) { showToast('Isi Nama Penerima terlebih dahulu.', 'danger'); return; }
-  if (!warehouse) { showToast('Pilih Warehouse terlebih dahulu.', 'danger'); return; }
+  if (!warehouse)    { showToast('Pilih Warehouse terlebih dahulu.', 'danger'); return; }
 
   const items = [];
   let valid = true;
   document.querySelectorAll('[id^="pn-"]').forEach(el => {
     if (!valid) return;
-    const id = el.id.split('-')[1];
-    const pn = el.value.trim();
-    const qty = parseInt(document.getElementById('qty-' + id).value);
+    const id     = el.id.split('-')[1];
+    const pn     = el.value.trim();
+    const qty    = parseInt(document.getElementById('qty-' + id).value);
     const status = document.getElementById('status-' + id).value;
-    const desc = document.getElementById('desc-' + id).value;
+    const desc   = document.getElementById('desc-' + id).value;
     if (pn) {
-      if (!qty || qty <= 0) {
-        showToast(`Qty pada Part #${id} harus lebih dari 0.`, 'danger');
-        valid = false; return;
-      }
-      if (!status) {
-        showToast(`Pilih Status pada Part #${id}.`, 'danger');
-        valid = false; return;
-      }
-      items.push({ tgl, nama, noUnit, namaPenerima, warehouse, pn, desc, qty, status });
+      if (!qty || qty <= 0) { showToast(`Qty pada Part #${id} harus lebih dari 0.`, 'danger'); valid = false; return; }
+      if (!status)          { showToast(`Pilih Status pada Part #${id}.`, 'danger'); valid = false; return; }
+      items.push({ tgl, nama, noUnit, manufacture, namaPenerima, warehouse, pn, desc, qty, status });
     }
   });
 
@@ -537,14 +609,13 @@ async function submitForm() {
   btn.innerHTML = '<span class="spinner"></span> Mengirim...';
 
   try {
-    const res = await fetch(APPS_SCRIPT_URL, {
+    const res  = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ action: 'submit', items })
     });
     const json = await res.json();
     if (json.status === 'success') {
-      // Tampilkan No Transaksi
       if (json.noTrx) {
         document.getElementById('no-trx-display').textContent = '✓ ' + json.noTrx;
         document.getElementById('no-trx-wrap').style.display = 'block';
@@ -554,7 +625,7 @@ async function submitForm() {
     } else {
       showToast('Gagal: ' + (json.message || 'Coba lagi.'), 'danger');
     }
-  } catch (err) {
+  } catch(err) {
     showToast('Gagal kirim. Cek koneksi internet.', 'danger');
   } finally {
     isSubmitting = false;
@@ -566,9 +637,13 @@ async function submitForm() {
 function resetForm() {
   document.getElementById('nama').value = '';
   document.querySelectorAll('input[name="prefix"]').forEach(r => r.checked = false);
-  document.getElementById('unit-input-wrap').style.display = 'none';
-  document.getElementById('no-unit-num').value = '';
+  document.getElementById('unit-input-area').style.display = 'none';
+  document.getElementById('unit-select').innerHTML = '<option value="">— Pilih No Unit —</option>';
+  document.getElementById('unit-manual-wrap').classList.remove('show');
+  document.getElementById('no-unit-manual').value = '';
   document.getElementById('no-unit').value = '';
+  document.getElementById('manufacture').value = '';
+  document.getElementById('manufacture-badge').classList.remove('show');
   document.getElementById('nama-penerima').value = '';
   document.querySelectorAll('input[name="warehouse"]').forEach(r => r.checked = false);
   document.getElementById('sub-krishna').classList.remove('show');
@@ -577,6 +652,7 @@ function resetForm() {
   document.getElementById('loc-yudistira').value = '';
   document.getElementById('items-container').innerHTML = '';
   document.getElementById('no-trx-wrap').style.display = 'none';
+  manualUnitMode = false;
   itemCount = 0;
   tambahItem();
   window.scrollTo({ top: 0, behavior: 'smooth' });
