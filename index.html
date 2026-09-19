@@ -220,24 +220,17 @@
       </div>
     </div>
     <div class="wh-sub" id="sub-krishna">
-      <label>Lokasi Gudang Krishna</label>
-      <select id="loc-krishna">
-        <option value="">— Pilih Lokasi —</option>
-        <option>WH-A Lt.1</option>
-        <option>WH-A Lt.2</option>
-        <option>WH-C</option>
-        <option>WH Tyre</option>
-        <option>WH Oil</option>
+      <label>Sbin Gudang Krishna</label>
+      <p class="unit-loading" id="loading-krishna">⏳ Memuat Sbin...</p>
+      <select id="loc-krishna" style="display:none;">
+        <option value="">— Pilih Sbin —</option>
       </select>
     </div>
     <div class="wh-sub" id="sub-yudistira">
-      <label>Lokasi Gudang Yudistira</label>
-      <select id="loc-yudistira">
-        <option value="">— Pilih Lokasi —</option>
-        <option>Lt-1</option>
-        <option>Lt-2</option>
-        <option>WH.C</option>
-        <option>WH.D</option>
+      <label>Sbin Gudang Yudistira</label>
+      <p class="unit-loading" id="loading-yudistira">⏳ Memuat Sbin...</p>
+      <select id="loc-yudistira" style="display:none;">
+        <option value="">— Pilih Sbin —</option>
       </select>
     </div>
   </div>
@@ -396,10 +389,50 @@ function updateNoUnitManual() {
 }
 
 // ── Warehouse ──
+let sbinCache = {};
+
 function toggleWH(gudang) {
   document.getElementById('sub-krishna').classList.remove('show');
   document.getElementById('sub-yudistira').classList.remove('show');
   document.getElementById('sub-' + gudang).classList.add('show');
+  loadSbin(gudang);
+}
+
+async function loadSbin(gudang) {
+  const gudangName = gudang === 'krishna' ? 'Gudang Krishna' : 'Gudang Yudistira';
+  const sel        = document.getElementById('loc-' + gudang);
+  const loading    = document.getElementById('loading-' + gudang);
+
+  if (sbinCache[gudang]) {
+    renderSbin(gudang, sbinCache[gudang]);
+    return;
+  }
+
+  loading.style.display = 'block';
+  sel.style.display = 'none';
+
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getSbin&gudang=${encodeURIComponent(gudangName)}`);
+    const json = await res.json();
+    sbinCache[gudang] = json.sbins || [];
+    renderSbin(gudang, sbinCache[gudang]);
+  } catch(e) {
+    loading.textContent = 'Gagal load Sbin. Cek koneksi.';
+  }
+}
+
+function renderSbin(gudang, sbins) {
+  const sel     = document.getElementById('loc-' + gudang);
+  const loading = document.getElementById('loading-' + gudang);
+  loading.style.display = 'none';
+  sel.style.display = 'block';
+  sel.innerHTML = '<option value="">— Pilih Sbin —</option>';
+  sbins.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s;
+    opt.textContent = s;
+    sel.appendChild(opt);
+  });
 }
 
 function getWarehouse() {
@@ -478,6 +511,14 @@ function tambahItem() {
       <div class="desc-field">
         <input type="text" id="desc-${id}" readonly placeholder="Description otomatis..." />
       </div>
+      <div class="desc-field" id="sbin-wrap-${id}" style="display:none;">
+        <label style="margin-top:6px;">Sbin</label>
+        <select id="sbin-sel-${id}" style="display:none;">
+          <option value="">— Pilih Sbin —</option>
+        </select>
+        <input type="text" id="sbin-txt-${id}" readonly placeholder="Sbin otomatis..." style="background:#f0fdf4; border-color:#86efac; color:#15803d;" />
+      </div>
+      <input type="hidden" id="sbin-${id}" />
     </div>
     <div class="grid-2">
       <div class="field">
@@ -501,7 +542,57 @@ function tambahItem() {
 function onPNBlur(id) {
   if (checkDuplicatePN(id)) return;
   const pn = document.getElementById(`pn-${id}`).value.trim();
-  if (pn) document.getElementById(`desc-${id}`).value = lookupDescription(pn) || '(Tidak ditemukan di master)';
+  if (pn) {
+    document.getElementById(`desc-${id}`).value = lookupDescription(pn) || '(Tidak ditemukan di master)';
+    lookupSbin(id, pn);
+  }
+}
+
+async function lookupSbin(id, pn) {
+  const wh = document.querySelector('input[name="warehouse"]:checked');
+  if (!wh) return;
+
+  const gudang = wh.value; // "Gudang Krishna" atau "Gudang Yudistira"
+  const wrap   = document.getElementById(`sbin-wrap-${id}`);
+  const sel    = document.getElementById(`sbin-sel-${id}`);
+  const txt    = document.getElementById(`sbin-txt-${id}`);
+  const hidden = document.getElementById(`sbin-${id}`);
+
+  wrap.style.display = 'block';
+  txt.placeholder = '⏳ Mencari Sbin...';
+  txt.style.display = 'block';
+  sel.style.display = 'none';
+  hidden.value = '';
+
+  try {
+    const res  = await fetch(`${APPS_SCRIPT_URL}?action=getSbin&pn=${encodeURIComponent(pn)}&gudang=${encodeURIComponent(gudang)}`);
+    const json = await res.json();
+    const sbins = json.sbins || [];
+
+    if (sbins.length === 0) {
+      txt.placeholder = '(Sbin tidak ditemukan)';
+      txt.value = '';
+    } else if (sbins.length === 1) {
+      // 1 Sbin → auto-fill
+      txt.style.display = 'block';
+      sel.style.display = 'none';
+      txt.value = sbins[0];
+      hidden.value = sbins[0];
+    } else {
+      // 2+ Sbin → dropdown
+      txt.style.display = 'none';
+      sel.style.display = 'block';
+      sel.innerHTML = '<option value="">— Pilih Sbin —</option>';
+      sbins.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s; opt.textContent = s;
+        sel.appendChild(opt);
+      });
+      sel.onchange = () => { hidden.value = sel.value; };
+    }
+  } catch(e) {
+    txt.placeholder = '(Gagal load Sbin)';
+  }
 }
 
 function hapusItem(id) {
@@ -540,6 +631,7 @@ function startScanner(id) {
       stopScanner();
       if (!checkDuplicatePN(id)) {
         document.getElementById(`desc-${id}`).value = lookupDescription(pn) || '(Tidak ditemukan di master)';
+        lookupSbin(id, pn);
       }
       document.getElementById('qty-' + id).focus();
     }
@@ -593,10 +685,11 @@ async function submitForm() {
     const qty    = parseInt(document.getElementById('qty-' + id).value);
     const status = document.getElementById('status-' + id).value;
     const desc   = document.getElementById('desc-' + id).value;
+    const sbin   = document.getElementById('sbin-' + id) ? document.getElementById('sbin-' + id).value : '';
     if (pn) {
       if (!qty || qty <= 0) { showToast(`Qty pada Part #${id} harus lebih dari 0.`, 'danger'); valid = false; return; }
       if (!status)          { showToast(`Pilih Status pada Part #${id}.`, 'danger'); valid = false; return; }
-      items.push({ tgl, nama, noUnit, manufacture, namaPenerima, warehouse, pn, desc, qty, status });
+      items.push({ tgl, nama, noUnit, manufacture, namaPenerima, warehouse, pn, desc, sbin, qty, status });
     }
   });
 
@@ -650,6 +743,7 @@ function resetForm() {
   document.getElementById('sub-yudistira').classList.remove('show');
   document.getElementById('loc-krishna').value = '';
   document.getElementById('loc-yudistira').value = '';
+  sbinCache = {};
   document.getElementById('items-container').innerHTML = '';
   document.getElementById('no-trx-wrap').style.display = 'none';
   manualUnitMode = false;
