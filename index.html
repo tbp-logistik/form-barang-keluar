@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Form Barang Keluar - PT. Trimegah Bangun Persada</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon" />
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a1a; min-height: 100vh; padding: 1rem; }
@@ -11,6 +12,9 @@
   .header { background: #1e3a5f; color: white; padding: 1rem 1.25rem; border-radius: 12px; margin-bottom: 1rem; display: flex; align-items: center; gap: 12px; }
   .header-logo { width: 52px; height: 52px; border-radius: 8px; background: white; padding: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; overflow: hidden; }
   .header-logo img { width: 100%; height: 100%; object-fit: contain; }
+  .header-logo .logo-fallback { display: none; font-size: 22px; }
+  .header-logo img.error { display: none; }
+  .header-logo img.error + .logo-fallback { display: block; }
   .header-text h1 { font-size: 15px; font-weight: 700; line-height: 1.3; }
   .header-text h2 { font-size: 13px; font-weight: 400; opacity: 0.75; margin-top: 2px; }
   .header-text p  { font-size: 11px; opacity: 0.55; margin-top: 4px; }
@@ -115,7 +119,8 @@
 
 <div class="header">
   <div class="header-logo">
-    <img src="Logo-NCKL%2020(small).png" alt="Logo PT. Trimegah Bangun Persada" />
+    <img src="Logo-NCKL%20(small).png" alt="Logo PT. Trimegah Bangun Persada" onerror="this.src='Logo.png'; this.onerror=null;" />
+    <span class="logo-fallback">🏭</span>
   </div>
   <div class="header-text">
     <h1>PT. TRIMEGAH BANGUN PERSADA</h1>
